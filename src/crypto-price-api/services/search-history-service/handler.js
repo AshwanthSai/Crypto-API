@@ -5,7 +5,6 @@ const docClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const tableName = process.env.TABLE_NAME;
 if (!tableName) throw new Error("TABLE_NAME environment variable not set.");
 
-
 /*
  * Flow:
  * 1. Initialize DynamoDB Document Client.

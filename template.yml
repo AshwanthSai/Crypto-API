@@ -21,10 +21,10 @@ Globals:
       - x86_64
     Environment:
       Variables:
-        TABLE_NAME: !Ref CryptoHistoryTable-prod
+        TABLE_NAME: !Ref CryptoHistoryTableProd
 
 Resources:
-  CryptoApiLayer-prod:
+  CryptoApiLayerProd:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: crypto-api-layer-prod
@@ -34,23 +34,24 @@ Resources:
         - nodejs20.x
       RetentionPolicy: Delete
 
-  EmailPriceFunction-prod:
+  EmailPriceFunctionProd:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: email-price-service-prod
       CodeUri: src/crypto-price-api/services/email-price-service/
       Handler: handler.handler
       Layers:
-        - !Ref CryptoApiLayer-prod
+        - !Ref CryptoApiLayerProd
       Environment:
         Variables:
+          TABLE_NAME: !Ref CryptoHistoryTableProd
           MAILTRAP_SSM_PARAMETER_NAME: !Ref MailtrapSsmParameterName
           MAILTRAP_USER: api
           FROM_EMAIL: '"Ashwanth Sai Prod" <noreply@portfoliosai.link>'
           COINGECKO_API_KEY_SSM_PARAM_NAME: !Ref CoinGeckoApiKeySsmParameterName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CryptoHistoryTable-prod
+            TableName: !Ref CryptoHistoryTableProd
         - Statement:
           - Effect: Allow
             Action:
@@ -69,15 +70,18 @@ Resources:
             Path: /prod/request-price
             Method: POST
 
-  SearchHistoryFunction-prod:
+  SearchHistoryFunctionProd:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: search-history-service-prod
       CodeUri: src/crypto-price-api/services/search-history-service/
       Handler: handler.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CryptoHistoryTableProd
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CryptoHistoryTable-prod
+            TableName: !Ref CryptoHistoryTableProd
       Events:
         ApiEvent:
           Type: HttpApi
@@ -85,7 +89,7 @@ Resources:
             Path: /prod/history
             Method: GET
 
-  CryptoHistoryTable-prod:
+  CryptoHistoryTableProd:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: CryptoSearchHistory-prod
@@ -96,15 +100,15 @@ Resources:
         SSEEnabled: true
 
 Outputs:
-  ApiUrl-prod:
+  ApiUrlProd:
     Description: "Prod API Gateway endpoint URL"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
-  EmailPriceFunctionName-prod:
+  EmailPriceFunctionNameProd:
     Description: "Prod Email Price Lambda Function Name"
-    Value: !Ref EmailPriceFunction-prod
-  SearchHistoryFunctionName-prod:
+    Value: !Ref EmailPriceFunctionProd
+  SearchHistoryFunctionNameProd:
     Description: "Prod Search History Lambda Function Name"
-    Value: !Ref SearchHistoryFunction-prod
-  CryptoHistoryTableName-prod:
+    Value: !Ref SearchHistoryFunctionProd
+  CryptoHistoryTableNameProd:
     Description: "Prod Crypto Search History DynamoDB Table Name"
-    Value: !Ref CryptoHistoryTable-prod
+    Value: !Ref CryptoHistoryTableProd
