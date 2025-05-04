@@ -1,0 +1,108 @@
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+*.swp
+*.swo
+*~
+
+# Dependencies
+node_modules/
+vendor/
+bower_components/
+jspm_packages/
+package-lock.json
+yarn.lock
+composer.lock
+
+# Build outputs
+dist/
+build/
+out/
+target/
+*.pyc
+__pycache__/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+.env.backup
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+
+# Testing
+coverage/
+.nyc_output/
+.coverage
+htmlcov/
+.tox/
+junit.xml
+test-results/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Database
+*.sql
+*.sqlite
+*.db
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Local configuration
+config.local.js
+config.dev.js
+application.local.yml
+application.dev.yml

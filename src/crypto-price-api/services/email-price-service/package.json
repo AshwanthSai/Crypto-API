@@ -1,0 +1,25 @@
+{
+  "name": "email-price-service",
+  "version": "1.0.0",
+  "description": "Microservice for querying cryptocurrency prices and sending email notifications.",
+  "main": "src/handler.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/handler.js",
+    "test": "cross-env TABLE_NAME='TestTable' COINGECKO_API_KEY_SSM_PARAM_NAME='DummyToken' MAILTRAP_SSM_PARAMETER_NAME='/test/token' MAILTRAP_USER='test-user' FROM_EMAIL='test@example.com' node --experimental-vm-modules ../../../../node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/client-ssm": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.799.0",
+    "aws-sdk": "^2.1030.0",
+    "axios": "^0.21.4",
+    "nodemailer": "^6.10.1",
+    "uuid": "^11.1.0"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}

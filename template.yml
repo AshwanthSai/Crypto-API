@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Crypto Price API with Email and History services using HTTP API.
+
+Parameters:
+  MailtrapSsmParameterName:
+    Type: String
+    Description: The name of the SSM SecureString parameter holding the Mailtrap token.
+    Default: /crypto-api/prod/mailtrap/token
+  CoinGeckoApiKeySsmParameterName:
+    Type: String
+    Description: The name of the SSM SecureString parameter holding the CoinGecko API key.
+    Default: /crypto-api/prod/coingecko/apikey
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref CryptoHistoryTable-prod
+
+Resources:
+  CryptoApiLayer-prod:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: crypto-api-layer-prod
+      Description: Layer with Axios, Nodemailer, and UUID for API
+      ContentUri: layers/
+      CompatibleRuntimes:
+        - nodejs20.x
+      RetentionPolicy: Delete
+
+  EmailPriceFunction-prod:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: email-price-service-prod
+      CodeUri: src/crypto-price-api/services/email-price-service/
+      Handler: handler.handler
+      Layers:
+        - !Ref CryptoApiLayer-prod
+      Environment:
+        Variables:
+          MAILTRAP_SSM_PARAMETER_NAME: !Ref MailtrapSsmParameterName
+          MAILTRAP_USER: api
+          FROM_EMAIL: '"Ashwanth Sai Prod" <noreply@portfoliosai.link>'
+          COINGECKO_API_KEY_SSM_PARAM_NAME: !Ref CoinGeckoApiKeySsmParameterName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CryptoHistoryTable-prod
+        - Statement:
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource:
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${MailtrapSsmParameterName}"
+              - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${CoinGeckoApiKeySsmParameterName}"
+          - Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*"
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /prod/request-price
+            Method: POST
+
+  SearchHistoryFunction-prod:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: search-history-service-prod
+      CodeUri: src/crypto-price-api/services/search-history-service/
+      Handler: handler.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CryptoHistoryTable-prod
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /prod/history
+            Method: GET
+
+  CryptoHistoryTable-prod:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: CryptoSearchHistory-prod
+      PrimaryKey:
+        Name: searchId
+        Type: String
+      SSESpecification:
+        SSEEnabled: true
+
+Outputs:
+  ApiUrl-prod:
+    Description: "Prod API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+  EmailPriceFunctionName-prod:
+    Description: "Prod Email Price Lambda Function Name"
+    Value: !Ref EmailPriceFunction-prod
+  SearchHistoryFunctionName-prod:
+    Description: "Prod Search History Lambda Function Name"
+    Value: !Ref SearchHistoryFunction-prod
+  CryptoHistoryTableName-prod:
+    Description: "Prod Crypto Search History DynamoDB Table Name"
+    Value: !Ref CryptoHistoryTable-prod

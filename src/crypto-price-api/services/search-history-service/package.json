@@ -1,0 +1,22 @@
+{
+  "name": "search-history-service",
+  "version": "1.0.0",
+  "description": "Microservice for retrieving cryptocurrency search history",
+  "type": "module",
+  "main": "src/handler.js",
+  "scripts": {
+    "start": "node src/handler.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.799.0",
+    "aws-sdk": "^2.1030.0"
+  },
+  "devDependencies": {
+    "aws-sdk-client-mock": "^4.1.0",
+    "aws-sdk-client-mock-jest": "^4.1.0",
+    "jest": "^26.6.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
