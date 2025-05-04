@@ -115,8 +115,9 @@ fetch(apiUrl)
 ---
 
 ## 🏛️ Architecture Diagram
+![Architecture Diagram](https://github.com/user-attachments/assets/f8810a4c-3ec0-4430-9d9c-f9de5849eb1a)
 
-![Architecture Diagram](https://github.com/user-attachments/assets/675d1518-6bf3-4547-a685-2179721d961c)
+
 
 ---
 
