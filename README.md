@@ -45,6 +45,10 @@ You can test the deployed API using JavaScript's `fetch` in a browser console or
 <br/>
 **Test in Postman** : https://www.postman.com/research-geologist-71302572/crypto-api/request/q0ftgih/crypto-api?action=share&creator=33984829&ctx=documentation
 
+**Disclaimer: Testing Programmatic `fetch` Requests**
+
+*   AWS security systems may block requests originating from `null` contexts (like browser consoles on `about:blank`), even if CORS appears correctly configured. This is separate from browser CORS checks.
+*   **Recommended Testing:** Execute your `fetch` calls from a `.js` or `.ts` file using your IDE and a runtime like Node.js for more reliable testing, as server-to-server requests bypass browser-specific origin restrictions.
 
 ### 1. Request Crypto Price (`POST /request-price`)
 
